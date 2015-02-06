@@ -10,7 +10,7 @@ c = 0;
 
 function Image(url, x, y, vx, vy) {
   this.a = 0;
-  this.d = 100;
+  this.d = 200;
   this.x = x;
   this.y = y;
   this.vx = vx;
@@ -20,15 +20,36 @@ function Image(url, x, y, vx, vy) {
 
   var i_element = document.createElement("img")
   i_element.src = url;
+  i_element.style.position = "absolute";
+  i_element.style.top = "0";
+  i_element.style.bottom = "0";
+  i_element.style.left = "0";
+  i_element.style.right = "0";
+  i_element.style.margin="auto";
 
-  this.element = document.createElement("a");
+  var a = document.createElement("a");
+  a.href = url;
+  a.appendChild(i_element);
+
+  this.element = document.createElement("div");
+
   this.element.href = url;
-  this.element.appendChild(i_element);
+  this.element.appendChild(a);
 
   this.element.style.position = "absolute";
-  this.element.style.top = y-156 + "px";
-  this.element.style.left = x-234 + "px";
+  //this.element.style.top = y-156 + "px";
+  //this.element.style.left = x-234 + "px";
+  this.element.style.top = "0";
+  this.element.style.bottom = "0";
+  this.element.style.left = "0";
+  this.element.style.right = "0";
+  this.element.style.margin = "auto";
 
+
+  /*this.element.style.maxWidth = "100px";
+  this.element.style.width = "100%";
+  this.element.style.height = "auto";
+  */
   document.body.appendChild(this.element);
 }
 
@@ -55,14 +76,16 @@ Image.prototype.render = function() {
   //this.element.style.left = (this.x-234) + "px";
   //this.element.style.transform = "translate("+this.x+"px,"+this.y+"px)";
 
-  this.element.style.transform = "rotate("+this.a+"deg) translateY("+this.d+"px)";
+  this.element.style.transform = " rotate("+this.a+"deg) translateY("+this.d+"px)";
+  //this.element.style.
 }
 
 Image.prototype.update = function(delta){
-  this.d += 5;
-  this.a += 5;
+  this.d += 0.005*delta;
+  this.a += 0.05*delta;
+  this.a %= 360;
   return;
-  var center = {'x': screen.width/2,
+  /*var center = {'x': screen.width/2,
                 'y': screen.height/2};
 
   var dx = center.x - this.x;
@@ -83,7 +106,7 @@ Image.prototype.update = function(delta){
   this.vx += this.ax;
   this.vy += this.ay;
   this.ax += ax;
-  this.ay += ay;
+  this.ay += ay;*/
 }
 
 function load_gallery() {
@@ -91,7 +114,7 @@ function load_gallery() {
                 'y': screen.height/2};
 
   IMG = new Image("http://www.systemoflevers.com/misc/voms/me_mouth_open_s.jpg",
-              center.x+100, center.y, 0.5,-1);//0.5, 0.5);
+              center.x+100, center.y, 0,0);//0.5, 0.5);
 
   requestAnimationFrame(render);
 
@@ -111,6 +134,7 @@ function render(time) {
   requestAnimationFrame(render);
 
   var delta = time - last;
+  last = time;
   IMG.update(delta);
   IMG.render();
 }
