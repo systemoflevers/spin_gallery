@@ -6,11 +6,25 @@ images = [];
 
 last = null;
 
+last_gen = null;
+
 c = 0;
+
+last_i = 1;
+
+image_list = [
+  "http://www.systemoflevers.com/spin_gallery/images/1.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/2.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/3.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/4.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/5.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/6.jpg",
+  "http://www.systemoflevers.com/spin_gallery/images/7.jpg"
+  ];
 
 function Image(url, x, y, vx, vy) {
   this.a = 0;
-  this.d = 200;
+  this.d = 0;
   this.x = x;
   this.y = y;
   this.vx = vx;
@@ -20,6 +34,7 @@ function Image(url, x, y, vx, vy) {
 
   var i_element = document.createElement("img")
   i_element.src = url;
+  i_element.style.width = "100px";
   i_element.style.position = "absolute";
   i_element.style.top = "0";
   i_element.style.bottom = "0";
@@ -64,6 +79,10 @@ function makedot(x,y,c) {
 
 }
 
+Image.prototype.kill = function() {
+  this.element.parentNode.removeChild(this.element);
+}
+
 Image.prototype.render = function() {
   /*if (c < 1000) {
     c++;
@@ -76,12 +95,12 @@ Image.prototype.render = function() {
   //this.element.style.left = (this.x-234) + "px";
   //this.element.style.transform = "translate("+this.x+"px,"+this.y+"px)";
 
-  this.element.style.transform = " rotate("+this.a+"deg) translateY("+this.d+"px)";
+  this.element.style.transform = "rotate("+this.a+"deg) translateY("+this.d+"px)";
   //this.element.style.
 }
 
 Image.prototype.update = function(delta){
-  this.d += 0.005*delta;
+  this.d += 0.01*delta;
   this.a += 0.05*delta;
   this.a %= 360;
   return;
@@ -113,8 +132,9 @@ function load_gallery() {
   var center = {'x': screen.width/2,
                 'y': screen.height/2};
 
-  IMG = new Image("http://www.systemoflevers.com/misc/voms/me_mouth_open_s.jpg",
-              center.x+100, center.y, 0,0);//0.5, 0.5);
+  images = [new Image(image_list[0], center.x+100, center.y, 0, 0)];
+  //IMG = new Image(image_list[0],//"http://www.systemoflevers.com/misc/voms/me_mouth_open_s.jpg",
+  //            center.x+100, center.y, 0,0);//0.5, 0.5);
 
   requestAnimationFrame(render);
 
@@ -130,14 +150,38 @@ function load_gallery() {
 }
 
 function render(time) {
-  if (last === null) last = time;
+  if (last === null) {
+    last_gen = last = time;
+  }
+  //if (images.length < 10) {
   requestAnimationFrame(render);
+  //}
+  while (images.length > 0 && images[0].d > screen.width) {
+    images.shift().kill();
+  }
+
+  if (time - last_gen > 5000) {
+    var center = {'x': screen.width/2,
+                'y': screen.height/2};
+    last_gen = time;
+    images.push(new Image(image_list[last_i], center.x+100, center.y, 0, 0));
+    last_i++;
+    last_i %= image_list.length;
+  }
 
   var delta = time - last;
   last = time;
-  IMG.update(delta);
-  IMG.render();
+
+  for (var i = 0; i < images.length; i++) {
+    images[i].update(delta);
+    images[i].render();
+
+  }
+  //IMG.update(delta);
+  //IMG.render();
 }
+
+
 
 /*function angle_to_elipse(width, height, angle) {
   var r = angle*math.pi/180;
