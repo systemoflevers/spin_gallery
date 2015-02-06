@@ -22,19 +22,19 @@ image_list = [
   "http://www.systemoflevers.com/spin_gallery/images/7.jpg"
   ];
 
-function Image(url, x, y, vx, vy) {
-  this.a = 0;
-  this.d = 0;
-  this.x = x;
+function Image(url, a, d) {// x, y, vx, vy) {
+  this.a = a;
+  this.d = d;
+  /*this.x = x;
   this.y = y;
   this.vx = vx;
   this.vy = vy;
   this.ax = 0;
-  this.ay = 0;
+  this.ay = 0;*/
 
   var i_element = document.createElement("img")
   i_element.src = url;
-  i_element.style.width = "100px";
+  i_element.style.width = "300px";
   i_element.style.position = "absolute";
   i_element.style.top = "0";
   i_element.style.bottom = "0";
@@ -84,23 +84,13 @@ Image.prototype.kill = function() {
 }
 
 Image.prototype.render = function() {
-  /*if (c < 1000) {
-    c++;
-    makedot(this.x, this.y, 'black')
-    makedot(Math.abs(this.ax), Math.abs(this.ay), 'blue');
-    makedot(Math.abs(this.vx), Math.abs(this.vy)+10, 'red');
-    //makedot(this.x + this.vx, this.y + this.vy, 'red');
-  }*/
-  //this.element.style.top = (this.y-156) + "px";
-  //this.element.style.left = (this.x-234) + "px";
-  //this.element.style.transform = "translate("+this.x+"px,"+this.y+"px)";
 
   this.element.style.transform = "rotate("+this.a+"deg) translateY("+this.d+"px)";
   //this.element.style.
 }
 
 Image.prototype.update = function(delta){
-  this.d += 0.01*delta;
+  this.d += 0.05*delta;
   this.a += 0.05*delta;
   this.a %= 360;
   return;
@@ -132,7 +122,7 @@ function load_gallery() {
   var center = {'x': screen.width/2,
                 'y': screen.height/2};
 
-  images = [new Image(image_list[0], center.x+100, center.y, 0, 0)];
+  images = [new Image(image_list[0],0,0)];
   //IMG = new Image(image_list[0],//"http://www.systemoflevers.com/misc/voms/me_mouth_open_s.jpg",
   //            center.x+100, center.y, 0,0);//0.5, 0.5);
 
@@ -160,11 +150,11 @@ function render(time) {
     images.shift().kill();
   }
 
-  if (time - last_gen > 5000) {
+  if (time - last_gen > 500) {
     var center = {'x': screen.width/2,
                 'y': screen.height/2};
     last_gen = time;
-    images.push(new Image(image_list[last_i], center.x+100, center.y, 0, 0));
+    images.push(new Image(image_list[last_i],Math.random() * 360, 50));
     last_i++;
     last_i %= image_list.length;
   }
