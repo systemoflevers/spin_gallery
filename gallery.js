@@ -9,6 +9,8 @@ last = null;
 c = 0;
 
 function Image(url, x, y, vx, vy) {
+  this.a = 0;
+  this.d = 100;
   this.x = x;
   this.y = y;
   this.vx = vx;
@@ -24,8 +26,8 @@ function Image(url, x, y, vx, vy) {
   this.element.appendChild(i_element);
 
   this.element.style.position = "absolute";
-  this.element.style.top = y + "px";
-  this.element.style.left = x + "px";
+  this.element.style.top = y-156 + "px";
+  this.element.style.left = x-234 + "px";
 
   document.body.appendChild(this.element);
 }
@@ -38,6 +40,7 @@ function makedot(x,y,c) {
   e.style.left = x + "px";
   e.style.color = c;
   document.body.appendChild(e);
+
 }
 
 Image.prototype.render = function() {
@@ -48,11 +51,17 @@ Image.prototype.render = function() {
     makedot(Math.abs(this.vx), Math.abs(this.vy)+10, 'red');
     //makedot(this.x + this.vx, this.y + this.vy, 'red');
   }*/
-  this.element.style.top = (this.y-156) + "px";
-  this.element.style.left = (this.x-234) + "px";
+  //this.element.style.top = (this.y-156) + "px";
+  //this.element.style.left = (this.x-234) + "px";
+  //this.element.style.transform = "translate("+this.x+"px,"+this.y+"px)";
+
+  this.element.style.transform = "rotate("+this.a+"deg) translateY("+this.d+"px)";
 }
 
 Image.prototype.update = function(delta){
+  this.d += 5;
+  this.a += 5;
+  return;
   var center = {'x': screen.width/2,
                 'y': screen.height/2};
 
